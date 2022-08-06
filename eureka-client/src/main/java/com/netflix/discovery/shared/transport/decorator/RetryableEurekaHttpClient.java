@@ -97,16 +97,21 @@ public class RetryableEurekaHttpClient extends EurekaHttpClientDecorator {
     protected <R> EurekaHttpResponse<R> execute(RequestExecutor<R> requestExecutor) {
         List<EurekaEndpoint> candidateHosts = null;
         int endpointIdx = 0;
+
         for (int retry = 0; retry < numberOfRetries; retry++) {
             EurekaHttpClient currentHttpClient = delegate.get();
             EurekaEndpoint currentEndpoint = null;
+
+
             if (currentHttpClient == null) {
+
                 if (candidateHosts == null) {
                     candidateHosts = getHostCandidates();
                     if (candidateHosts.isEmpty()) {
                         throw new TransportException("There is no known eureka server; cluster server list is empty");
                     }
                 }
+
                 if (endpointIdx >= candidateHosts.size()) {
                     throw new TransportException("Cannot execute request on any known server");
                 }

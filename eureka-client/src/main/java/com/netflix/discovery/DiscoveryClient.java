@@ -308,7 +308,7 @@ public class DiscoveryClient implements EurekaClient {
             this.healthCheckHandlerProvider = null;
             this.preRegistrationHandler = null;
         }
-        
+
         this.applicationInfoManager = applicationInfoManager;
         InstanceInfo myInfo = applicationInfoManager.getInfo();
 
@@ -409,7 +409,11 @@ public class DiscoveryClient implements EurekaClient {
             throw new RuntimeException("Failed to initialize DiscoveryClient!", e);
         }
 
+        /**
+         *  如果要获取注册表, 那就去获取远程注册表, 如果获取失败就获取备份注册表
+         */
         if (clientConfig.shouldFetchRegistry() && !fetchRegistry(false)) {
+            // 获取备份注册表
             fetchRegistryFromBackup();
         }
 
@@ -417,6 +421,10 @@ public class DiscoveryClient implements EurekaClient {
         if (this.preRegistrationHandler != null) {
             this.preRegistrationHandler.beforeRegistration();
         }
+
+        /**
+         * 执行调度任务
+         */
         initScheduledTasks();
 
         try {
@@ -438,7 +446,7 @@ public class DiscoveryClient implements EurekaClient {
     private void scheduleServerEndpointTask(EurekaTransport eurekaTransport,
                                             AbstractDiscoveryClientOptionalArgs args) {
 
-            
+
         Collection<?> additionalFilters = args == null
                 ? Collections.emptyList()
                 : args.additionalFilters;
@@ -446,12 +454,12 @@ public class DiscoveryClient implements EurekaClient {
         EurekaJerseyClient providedJerseyClient = args == null
                 ? null
                 : args.eurekaJerseyClient;
-        
+
         TransportClientFactories argsTransportClientFactories = null;
         if (args != null && args.getTransportClientFactories() != null) {
             argsTransportClientFactories = args.getTransportClientFactories();
         }
-        
+
         // Ignore the raw types warnings since the client filter interface changed between jersey 1/2
         @SuppressWarnings("rawtypes")
         TransportClientFactories transportClientFactories = argsTransportClientFactories == null
@@ -530,7 +538,7 @@ public class DiscoveryClient implements EurekaClient {
     public EurekaClientConfig getEurekaClientConfig() {
         return clientConfig;
     }
-    
+
     @Override
     public ApplicationInfoManager getApplicationInfoManager() {
         return applicationInfoManager;
@@ -1485,9 +1493,9 @@ public class DiscoveryClient implements EurekaClient {
             }
         } catch (Throwable e) {
             logger.error("Cannot fetch registry from server", e);
-        }        
+        }
     }
-    
+
     /**
      * Fetch the registry information from back up registry if all eureka server
      * urls are unreachable.

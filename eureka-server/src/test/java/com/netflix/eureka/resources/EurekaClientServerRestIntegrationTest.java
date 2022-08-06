@@ -243,8 +243,18 @@ public class EurekaClientServerRestIntegrationTest {
 
         server.start();
 
+//        server = new Server(8080);
+//
+//        WebAppContext webAppCtx = new WebAppContext(new File("./eureka-server/src/main/webapp").getAbsolutePath(), "/");
+//        webAppCtx.setDescriptor(new File("./eureka-server/src/main/webapp/WEB-INF/web.xml").getAbsolutePath());
+//        webAppCtx.setResourceBase(new File("./eureka-server/src/main/resources").getAbsolutePath());
+//        webAppCtx.setClassLoader(Thread.currentThread().getContextClassLoader());
+//        server.setHandler(webAppCtx);
+//        server.start();
+
         eurekaServiceUrl = "http://localhost:8080/v2";
     }
+
 
     private static File findWar() {
         File dir = null;
