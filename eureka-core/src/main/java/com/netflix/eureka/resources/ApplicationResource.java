@@ -144,7 +144,10 @@ public class ApplicationResource {
     public Response addInstance(InstanceInfo info,
                                 @HeaderParam(PeerEurekaNode.HEADER_REPLICATION) String isReplication) {
         logger.debug("Registering instance {} (replication={})", info.getId(), isReplication);
+
         // validate that the instanceinfo contains all the necessary required fields
+        // 检验 instanceInfo 必须的字段, 提升代码的健壮性, 这里使用大量的 if else 是不好的选择
+        // 还写了一堆魔法数字
         if (isBlank(info.getId())) {
             return Response.status(400).entity("Missing instanceId").build();
         } else if (isBlank(info.getHostName())) {
@@ -182,6 +185,7 @@ public class ApplicationResource {
             }
         }
 
+        // 还用  "true".equals 硬编码的方式进行判断...
         registry.register(info, "true".equals(isReplication));
         return Response.status(204).build();  // 204 to be backwards compatible
     }

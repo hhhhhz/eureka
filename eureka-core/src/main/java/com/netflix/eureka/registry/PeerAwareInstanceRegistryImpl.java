@@ -239,20 +239,26 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
         this.expectedNumberOfRenewsPerMin = count * 2;
         this.numberOfRenewsPerMinThreshold =
                 (int) (this.expectedNumberOfRenewsPerMin * serverConfig.getRenewalPercentThreshold());
+
         logger.info("Got " + count + " instances from neighboring DS node");
         logger.info("Renew threshold is: " + numberOfRenewsPerMinThreshold);
+
         this.startupTime = System.currentTimeMillis();
         if (count > 0) {
             this.peerInstancesTransferEmptyOnStartup = false;
         }
+
         DataCenterInfo.Name selfName = applicationInfoManager.getInfo().getDataCenterInfo().getName();
         boolean isAws = Name.Amazon == selfName;
         if (isAws && serverConfig.shouldPrimeAwsReplicaConnections()) {
             logger.info("Priming AWS connections for all replicas..");
             primeAwsReplicas(applicationInfoManager);
         }
+
         logger.info("Changing status to UP");
+
         applicationInfoManager.setInstanceStatus(InstanceStatus.UP);
+
         super.postInit();
     }
 
@@ -403,11 +409,18 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
      */
     @Override
     public void register(final InstanceInfo info, final boolean isReplication) {
+        // 默认租约时间
         int leaseDuration = Lease.DEFAULT_DURATION_IN_SECS;
+
+        // 使用自定义的租约时间
         if (info.getLeaseInfo() != null && info.getLeaseInfo().getDurationInSecs() > 0) {
             leaseDuration = info.getLeaseInfo().getDurationInSecs();
         }
+
+        // 进行注册
         super.register(info, leaseDuration, isReplication);
+
+        // 看是将服务实例信息复制到集群其他节点
         replicateToPeers(Action.Register, info.getAppName(), info.getId(), info, null, isReplication);
     }
 

@@ -276,14 +276,21 @@ public class EurekaBootStrap implements ServletContextListener {
         logger.info("Initialized server context");
 
         // Copy registry from neighboring eureka node
+        // 复制相邻集群节点的注册表
         int registryCount = registry.syncUp();
+
+        // 这都是啥玩意, 从名字看开放接收请求？？？让人难以理解
         registry.openForTraffic(applicationInfoManager, registryCount);
 
         // Register all monitoring statistics.
         EurekaMonitors.registerAllStats();
     }
 
-    protected PeerEurekaNodes getPeerEurekaNodes(PeerAwareInstanceRegistry registry, EurekaServerConfig eurekaServerConfig, EurekaClientConfig eurekaClientConfig, ServerCodecs serverCodecs, ApplicationInfoManager applicationInfoManager) {
+    protected PeerEurekaNodes getPeerEurekaNodes(PeerAwareInstanceRegistry registry
+            , EurekaServerConfig eurekaServerConfig
+            , EurekaClientConfig eurekaClientConfig
+            , ServerCodecs serverCodecs
+            , ApplicationInfoManager applicationInfoManager) {
         PeerEurekaNodes peerEurekaNodes = new PeerEurekaNodes(
                 registry,
                 eurekaServerConfig,

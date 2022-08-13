@@ -132,7 +132,14 @@ public class PeerEurekaNode {
      * @throws Exception
      */
     public void register(final InstanceInfo info) throws Exception {
+        // 字面意思是到期时间, 应该是指这个服务实例的过期时间
         long expiryTime = System.currentTimeMillis() + getLeaseRenewalOf(info);
+
+        /**
+         * 传入一个任务id
+         * 一个服务实例复制任务
+         * 当前服务过期时间
+         */
         batchingDispatcher.process(
                 taskId("register", info),
                 new InstanceReplicationTask(targetHost, Action.Register, info, null, true) {

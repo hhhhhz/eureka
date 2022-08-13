@@ -216,7 +216,10 @@ class AcceptorExecutor<ID, T> {
 
         private void drainInputQueues() throws InterruptedException {
             do {
+                // 需要重新处理的队列
                 drainReprocessQueue();
+
+                //
                 drainAcceptorQueue();
 
                 if (!isShutdown.get()) {
