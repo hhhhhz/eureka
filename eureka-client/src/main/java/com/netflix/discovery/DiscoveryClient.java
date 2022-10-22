@@ -486,6 +486,10 @@ public class DiscoveryClient implements EurekaClient {
             }
         };
 
+        /**
+         * bootstrapResolver 这玩意作用就是用来获取 eureka server 的地址, 每隔 30s 会将里面的地址信息随机打乱
+         * 拿到eureka server 地址用来进行注册、获取注册表、发送心跳等操作
+         */
         eurekaTransport.bootstrapResolver = EurekaHttpClients.newBootstrapResolver(
                 clientConfig,
                 transportConfig,
@@ -498,6 +502,12 @@ public class DiscoveryClient implements EurekaClient {
             EurekaHttpClientFactory newRegistrationClientFactory = null;
             EurekaHttpClient newRegistrationClient = null;
             try {
+
+                /**
+                 * 2022-10-21：
+                 * 为了验证  eureka client 注册是要找一个 eureka server 进行注册，然后由 eureka server 进行同步吗？
+                 * 发现玩意创建 registrationClient 非常饶, 要命, 这是第二次找这个东西了
+                 */
                 newRegistrationClientFactory = EurekaHttpClients.registrationClientFactory(
                         eurekaTransport.bootstrapResolver,
                         eurekaTransport.transportClientFactory,

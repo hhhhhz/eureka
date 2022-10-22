@@ -160,7 +160,10 @@ public class EurekaBootStrap implements ServletContextListener {
      * init hook for server context. Override for custom logic.
      */
     protected void initEurekaServerContext() throws Exception {
-        // 1、初始化 eureka server 配置, 面向接口的方式
+        /**
+         * 1、初始化 eureka server 配置, 面向接口的方式。
+         *    读取跟 eureka server 相关的配置项, 比如亚马逊云端id和秘钥， eureka自我保护等配置
+         */
         EurekaServerConfig eurekaServerConfig = new DefaultEurekaServerConfig();
 
         // For backward compatibility
@@ -183,7 +186,7 @@ public class EurekaBootStrap implements ServletContextListener {
         if (eurekaClient == null) {
 
             /**
-             * 加载 eureka instance 实例配置。
+             * 加载 eureka instance 实例配置。 就是这个实例的一些相关信息， 比如实例id，实例名称，心跳续约间隔等相关信息，基本跟自己本地相关的信息
              * 其实就是通过 ConfigurationManager 加载 eureka-client 配置文件
              * 然后 EurekaInstanceConfig 接口约定所需的配置属性
              */
@@ -199,7 +202,7 @@ public class EurekaBootStrap implements ServletContextListener {
                     instanceConfig, new EurekaConfigBasedInstanceInfoProvider(instanceConfig).get());
 
             /**
-             * 加载 eureka client 配置。
+             * 加载 eureka client 配置。就是这个客户端是否需要注册到 server 端、注册地址、每隔多久拉取注册表等配置，基本跟server进行注册有关的信息
              * 其实就是通过 ConfigurationManager 加载 eureka-client 配置文件
              * 然后 EurekaClientConfig 接口约定所需的配置属性
              */
