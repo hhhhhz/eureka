@@ -1305,6 +1305,7 @@ public class DiscoveryClient implements EurekaClient {
         }
 
         if (clientConfig.shouldRegisterWithEureka()) {
+            // 默认 30s 心跳续约
             int renewalIntervalInSecs = instanceInfo.getLeaseInfo().getRenewalIntervalInSecs();
             int expBackOffBound = clientConfig.getHeartbeatExecutorExponentialBackOffBound();
             logger.info("Starting heartbeat executor: " + "renew interval is: " + renewalIntervalInSecs);
@@ -1326,7 +1327,7 @@ public class DiscoveryClient implements EurekaClient {
             instanceInfoReplicator = new InstanceInfoReplicator(
                     this,
                     instanceInfo,
-                    clientConfig.getInstanceInfoReplicationIntervalSeconds(),
+                    clientConfig.getInstanceInfoReplicationIntervalSeconds(), // 默认30s执行复制一次
                     2); // burstSize
 
             statusChangeListener = new ApplicationInfoManager.StatusChangeListener() {
@@ -1352,6 +1353,7 @@ public class DiscoveryClient implements EurekaClient {
                 applicationInfoManager.registerStatusChangeListener(statusChangeListener);
             }
 
+            // 默认 40s 执行复制
             instanceInfoReplicator.start(clientConfig.getInitialInstanceInfoReplicationIntervalSeconds());
         } else {
             logger.info("Not registering with Eureka server per configuration");
