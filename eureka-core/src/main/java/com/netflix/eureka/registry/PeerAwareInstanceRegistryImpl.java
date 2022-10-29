@@ -193,7 +193,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
                            public void run() {
                                updateRenewalThreshold();
                            }
-                       }, serverConfig.getRenewalThresholdUpdateIntervalMs(),
+                       }, serverConfig.getRenewalThresholdUpdateIntervalMs(), // 默认每隔 15 分钟执行一次
                 serverConfig.getRenewalThresholdUpdateIntervalMs());
     }
 
@@ -257,6 +257,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
 
         logger.info("Changing status to UP");
 
+        // 猜测是通过这个状态去触发服务立马注册, 等待验证
         applicationInfoManager.setInstanceStatus(InstanceStatus.UP);
 
         super.postInit();

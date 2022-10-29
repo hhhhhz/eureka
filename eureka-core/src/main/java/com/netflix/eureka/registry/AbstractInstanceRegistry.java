@@ -288,7 +288,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
             // 将服务实例添加到最近注册队列中
             recentlyChangedQueue.add(new RecentlyChangedItem(lease));
 
-            // 更新一下租约时间
+            // 设置一下服务一下时间
             registrant.setLastUpdatedTimestamp();
 
             // 过期掉缓存
@@ -332,7 +332,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
             Map<String, Lease<InstanceInfo>> gMap = registry.get(appName);
             Lease<InstanceInfo> leaseToCancel = null;
 
-            // 从注册表移除
+                // 从注册表移除
             if (gMap != null) {
                 leaseToCancel = gMap.remove(id);
             }
@@ -1268,7 +1268,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
             evictionTaskRef.get().cancel();
         }
         /**
-         * 默认每隔 60s 清   理一下失效的服务实例
+         * 默认每隔 60s 清理一下失效的服务实例
          */
         evictionTaskRef.set(new EvictionTask());
         evictionTimer.schedule(evictionTaskRef.get(),
